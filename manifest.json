@@ -1,0 +1,16 @@
+{
+    "manifest_version": 3,
+    "name": "My First Extension",
+    "version": "1.0",
+    "description": "Day 1 Chrome Extension Setup",
+    "permissions": ["scripting", "activeTab"],
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"]
+      }
+    ]
+  }
