@@ -1,34 +1,57 @@
-console.log("Hello from content script");
-const selectedText = window.getSelection().toString();
-
-document.addEventListener("mouseup", function (e) {
+document.addEventListener('mouseup', () => {
   const selectedText = window.getSelection().toString().trim();
 
 
-  const oldBtn = document.getElementById("web2sheet-btn");
-  if (oldBtn) oldBtn.remove();
+  const existingBtn = document.getElementById('save-highlight-btn');
+  if (existingBtn) existingBtn.remove();
 
-  if (selectedText.length > 0) {
-    const btn = document.createElement("button");
-    btn.innerText = "Save";
-    btn.id = "web2sheet-btn";
-    btn.style.position = "absolute";
-    btn.style.top = `${e.pageY}px`;
-    btn.style.left = `${e.pageX}px`;
-    btn.style.zIndex = 9999;
-    btn.style.padding = "6px 12px";
-    btn.style.background = "#4CAF50";
-    btn.style.color = "#fff";
-    btn.style.border = "none";
-    btn.style.borderRadius = "4px";
-    btn.style.cursor = "pointer";
-    btn.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
+  if (selectedText.length === 0) return;
 
-    document.body.appendChild(btn);
+  const range = window.getSelection().getRangeAt(0);
+  const rect = range.getBoundingClientRect();
 
-    btn.addEventListener("click", () => {
-      console.log("Selected Text:", selectedText);
-      btn.remove(); 
+  const btn = document.createElement('button');
+  btn.id = 'save-highlight-btn';
+  btn.textContent = 'Save';
+  btn.style.position = 'absolute';
+  btn.style.top = `${rect.bottom + window.scrollY + 5}px`;
+  btn.style.left = `${rect.left + window.scrollX}px`;
+  btn.style.zIndex = 9999;
+  btn.style.padding = '5px 10px';
+  btn.style.backgroundColor = '#007bff';
+  btn.style.color = 'white';
+  btn.style.border = 'none';
+  btn.style.borderRadius = '4px';
+  btn.style.cursor = 'pointer';
+  btn.style.fontSize = '14px';
+  btn.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
+
+  document.body.appendChild(btn);
+
+  btn.addEventListener('click', () => {
+    console.log('Save button clicked');
+
+    const data = {
+      text: selectedText,
+      title: document.title,
+      url: window.location.href,
+      timestamp: new Date().toISOString()
+    };
+
+    chrome.runtime.sendMessage({ action: 'saveHighlight', data }, () => {
+      console.log('Message sent to background');
+      btn.remove();
+      console.log('Button removed');
     });
+  });
+});
+
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.action === 'removeButton') {
+    const btn = document.getElementById('save-highlight-btn');
+    if (btn) {
+      console.log('Removing button on demand');
+      btn.remove();
+    }
   }
 });

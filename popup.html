@@ -1,10 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Popup</title>
+  <meta charset="UTF-8" />
+  <title>Highlight Preview</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 15px;
+      width: 300px;
+      box-sizing: border-box;
+    }
+    #metadata {
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      word-break: break-word;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello from Popup</h1>
+  <h3>Highlight Preview</h3>
+  <div id="metadata">No highlight selected ye.</div>
+  <button id="send-btn" disabled>Send to Sheet</button>
+
   <script src="popup.js"></script>
 </body>
 </html>
